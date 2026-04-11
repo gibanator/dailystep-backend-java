@@ -5,6 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetCategoriesForUserResponse {
+public class EditCategoryRequest {
+
     private String name;
+    private boolean isActive;
+    // sort order TODO
+    private boolean isVisible;
+
 }

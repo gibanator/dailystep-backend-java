@@ -1,5 +1,6 @@
 package com.gibanator.dailystepbackendjava.global;
 
+import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.global.dto.ErrorResponse;
 import com.gibanator.dailystepbackendjava.user.exception.DuplicateEmailException;
 import com.gibanator.dailystepbackendjava.user.exception.UserNotFoundException;
@@ -46,6 +47,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(resp);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
+        ErrorResponse resp = new ErrorResponse("Not found.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(resp);
     }
 }

@@ -1,8 +1,6 @@
 package com.gibanator.dailystepbackendjava.category;
 
-import com.gibanator.dailystepbackendjava.category.dto.CreateCategoryRequest;
-import com.gibanator.dailystepbackendjava.category.dto.CreateCategoryResponse;
-import com.gibanator.dailystepbackendjava.category.dto.GetCategoriesForUserResponse;
+import com.gibanator.dailystepbackendjava.category.dto.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,8 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CreateCategoryResponse> create(
             @Valid @RequestParam Long userId,  // USER SHOULD NOT BE PASSED
-            @Valid @RequestBody CreateCategoryRequest req) {
+            @Valid @RequestBody CreateCategoryRequest req
+    ) {
         CategoryEntity category = service.create(userId, req.getName());
 
         CreateCategoryResponse resp = new CreateCategoryResponse();
@@ -34,18 +33,51 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetCategoriesForUserResponse>> getByUserId(
+    public ResponseEntity<List<GetCategoryResponse>> getByUserId(
             @RequestParam Long userId
     ) {
-        List<GetCategoriesForUserResponse> resp = service.findByUserId(userId)
+        List<GetCategoryResponse> resp = service.findByUserId(userId)
                 .stream()
                 .map(cat -> {
-                    GetCategoriesForUserResponse dto = new GetCategoriesForUserResponse();
+                    GetCategoryResponse dto = new GetCategoryResponse();
                     dto.setName(cat.getName());
                     return dto;
                 })
                 .toList();
         return ResponseEntity
                 .ok(resp);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<GetCategoryResponse> editByUserId(
+            @PathVariable Long id,
+            @RequestParam Long userId,
+            @RequestBody EditCategoryRequest req
+    ){
+        CategoryEntity cat = service.update(
+                id,
+                userId,
+                req.getName(),
+                req.isActive(),
+                req.isVisible()
+        );
+
+        GetCategoryResponse resp = new GetCategoryResponse();
+        resp.setId(cat.getId());
+        resp.setName(cat.getName());
+
+        return ResponseEntity.ok(resp);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> removeCategory(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ){
+        service.delete(id, userId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
