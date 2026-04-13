@@ -1,5 +1,6 @@
 package com.gibanator.dailystepbackendjava.category;
 
+import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.user.UserEntity;
 import com.gibanator.dailystepbackendjava.user.UserRepository;
 import com.gibanator.dailystepbackendjava.user.exception.UserNotFoundException;
@@ -30,5 +31,35 @@ public class CategoryService {
 
     public List<CategoryEntity> findByUserId(Long userId) {
        return categoryRepository.findByUserId(userId);
+    }
+
+    public CategoryEntity update(Long id, Long userId, String name, Boolean isActive, Boolean isVisible) {
+        CategoryEntity cat = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
+
+        if (!cat.getUser().getId().equals(userId)) {
+            throw new CategoryNotFoundException(id);
+        }
+
+        if (name != null) {
+            cat.setName(name);
+        }
+        if (isActive != null) {
+            cat.setActive(isActive);
+        }
+        if (isVisible != null) {
+            cat.setVisible(isVisible);
+        }
+
+        return categoryRepository.save(cat);
+    }
+
+    public void delete(Long id, Long userId){
+        CategoryEntity cat = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
+
+        if (!cat.getUser().getId().equals(userId)) {
+            throw new CategoryNotFoundException(id);
+        }
     }
 }

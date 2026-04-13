@@ -1,12 +1,11 @@
 package com.gibanator.dailystepbackendjava.category.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateCategoryRequest {
-    @NotBlank(message = "Category name is required.")
+public class GetCategoryResponse {
+    private Long id;
     private String name;
 }
