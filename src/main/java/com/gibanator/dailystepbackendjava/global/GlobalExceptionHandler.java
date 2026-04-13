@@ -1,8 +1,9 @@
 package com.gibanator.dailystepbackendjava.global;
 
+import com.gibanator.dailystepbackendjava.auth.exceptions.EmailAlreadyExistsException;
+import com.gibanator.dailystepbackendjava.auth.exceptions.InvalidCredentialsException;
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.global.dto.ErrorResponse;
-import com.gibanator.dailystepbackendjava.user.exception.DuplicateEmailException;
 import com.gibanator.dailystepbackendjava.user.exception.UserNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,16 @@ public class GlobalExceptionHandler {
                 .body(resp);
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(EmailAlreadyExistsException ex) {
+
+            ErrorResponse resp = new ErrorResponse("Data integrity violation.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(resp);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
 
@@ -40,22 +51,21 @@ public class GlobalExceptionHandler {
                 .body(resp);
     }
 
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException ex) {
-
-        ErrorResponse resp = new ErrorResponse("Data integrity violation.", ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(resp);
-    }
-
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
         ErrorResponse resp = new ErrorResponse("Not found.", ex.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(resp);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        ErrorResponse resp = new ErrorResponse("Invalid credentials.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(resp);
     }
 }

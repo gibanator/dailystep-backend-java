@@ -1,10 +1,12 @@
 package com.gibanator.dailystepbackendjava.category;
 
 import com.gibanator.dailystepbackendjava.category.dto.*;
+import com.gibanator.dailystepbackendjava.user.UserEntity;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,24 +21,24 @@ public class CategoryController {
     // NEED TO ADD AUTH LATER, JUST SIMPLE SOLUTION FOR NOW!!!
     @PostMapping
     public ResponseEntity<CreateCategoryResponse> create(
-            @Valid @RequestParam Long userId,  // USER SHOULD NOT BE PASSED
+            @AuthenticationPrincipal UserEntity user,  // BETTER TO USE PRINCIPAL CLASS LATER
             @Valid @RequestBody CreateCategoryRequest req
     ) {
-        CategoryEntity category = service.create(userId, req.getName());
+        CategoryEntity category = service.create(user.getId(), req.getName());
 
         CreateCategoryResponse resp = new CreateCategoryResponse();
         resp.setName(category.getName());
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                 .status(HttpStatus.CREATED)
                 .body(resp);
     }
 
     @GetMapping
-    public ResponseEntity<List<GetCategoryResponse>> getByUserId(
-            @RequestParam Long userId
-    ) {
-        List<GetCategoryResponse> resp = service.findByUserId(userId)
+    public ResponseEntity<List<GetCategoryResponse>> getMyCategories(
+            @AuthenticationPrincipal UserEntity user
+            ) {
+        List<GetCategoryResponse> resp = service.findByUserId(user.getId())
                 .stream()
                 .map(cat -> {
                     GetCategoryResponse dto = new GetCategoryResponse();
@@ -49,14 +51,14 @@ public class CategoryController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GetCategoryResponse> editByUserId(
+    public ResponseEntity<GetCategoryResponse> editMyCategoryById(
             @PathVariable Long id,
-            @RequestParam Long userId,
+            @AuthenticationPrincipal UserEntity user,
             @RequestBody EditCategoryRequest req
     ){
         CategoryEntity cat = service.update(
                 id,
-                userId,
+                user.getId(),
                 req.getName(),
                 req.isActive(),
                 req.isVisible()
@@ -72,9 +74,9 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeCategory(
             @PathVariable Long id,
-            @RequestParam Long userId
+            @AuthenticationPrincipal UserEntity user
     ){
-        service.delete(id, userId);
+        service.delete(id, user.getId());
 
         return ResponseEntity
                 .noContent()
