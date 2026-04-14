@@ -2,6 +2,7 @@ package com.gibanator.dailystepbackendjava.dailycategoryprogress;
 
 import com.gibanator.dailystepbackendjava.category.CategoryEntity;
 import com.gibanator.dailystepbackendjava.category.CategoryRepository;
+import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.dailycategoryprogress.dto.DailyProgressResponse;
 import com.gibanator.dailystepbackendjava.dailycategoryprogress.dto.SaveDailyProgressRequest;
 
@@ -40,7 +41,7 @@ public class DailyCategoryProgressService {
                 .findAllByIdInAndUserId(categoryIds, userId);
 
         if (categories.size() != categoryIds.size()) {
-            throw new RuntimeException("One or more categories not found"); // PROPER EXCEPTION TODO()
+            throw new CategoryNotFoundException(categoryIds);
         }
 
         // category map for found categories type <id, CategoryEntity>
