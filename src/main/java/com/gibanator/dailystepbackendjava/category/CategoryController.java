@@ -18,7 +18,6 @@ public class CategoryController {
 
     private final CategoryService service;
 
-    // NEED TO ADD AUTH LATER, JUST SIMPLE SOLUTION FOR NOW!!!
     @PostMapping
     public ResponseEntity<CreateCategoryResponse> create(
             @AuthenticationPrincipal UserEntity user,  // BETTER TO USE PRINCIPAL CLASS LATER
