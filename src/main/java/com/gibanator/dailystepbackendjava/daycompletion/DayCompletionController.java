@@ -1,7 +1,7 @@
 package com.gibanator.dailystepbackendjava.daycompletion;
 
+import com.gibanator.dailystepbackendjava.auth.security.UserPrincipal;
 import com.gibanator.dailystepbackendjava.daycompletion.dto.DayCompletionResponse;
-import com.gibanator.dailystepbackendjava.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +19,7 @@ public class DayCompletionController {
     private final DayCompletionService service;
     @PostMapping("/toggle")
     public ResponseEntity<DayCompletionResponse> toggleDayCompletion(
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserPrincipal user,
             @RequestParam LocalDate date
             ){
         boolean completed = service.setDayCompleted(user.getId(), date);

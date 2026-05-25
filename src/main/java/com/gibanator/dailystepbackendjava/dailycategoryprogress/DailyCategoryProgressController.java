@@ -1,8 +1,8 @@
 package com.gibanator.dailystepbackendjava.dailycategoryprogress;
 
+import com.gibanator.dailystepbackendjava.auth.security.UserPrincipal;
 import com.gibanator.dailystepbackendjava.dailycategoryprogress.dto.DailyProgressResponse;
 import com.gibanator.dailystepbackendjava.dailycategoryprogress.dto.SaveDailyProgressRequest;
-import com.gibanator.dailystepbackendjava.user.UserEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class DailyCategoryProgressController {
 
     @PostMapping
     public ResponseEntity<?> saveProgressForDay(
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody SaveDailyProgressRequest req
             ){
 
@@ -30,7 +30,7 @@ public class DailyCategoryProgressController {
 
     @GetMapping
     public ResponseEntity<DailyProgressResponse> getProgressForDay(
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserPrincipal user,
             @RequestParam LocalDate date
             ){
 

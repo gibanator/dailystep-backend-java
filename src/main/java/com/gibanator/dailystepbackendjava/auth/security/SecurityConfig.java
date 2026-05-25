@@ -1,6 +1,5 @@
-package com.gibanator.dailystepbackendjava.config;
+package com.gibanator.dailystepbackendjava.auth.security;
 
-import com.gibanator.dailystepbackendjava.auth.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final FirebaseAuthenticationFilter firebaseAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -29,7 +28,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(
-                                        "/api/v1/auth/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**"
                                         ).permitAll()
@@ -37,11 +35,11 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Firebase token")
                         )
                 )
                 .addFilterBefore(
-                        jwtAuthenticationFilter,
+                        firebaseAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .build();

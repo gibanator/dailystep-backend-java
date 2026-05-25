@@ -4,7 +4,7 @@ import com.gibanator.dailystepbackendjava.auth.exceptions.EmailAlreadyExistsExce
 import com.gibanator.dailystepbackendjava.auth.exceptions.InvalidCredentialsException;
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.global.dto.ErrorResponse;
-import com.gibanator.dailystepbackendjava.user.exception.UserNotFoundException;
+import com.gibanator.dailystepbackendjava.auth.exceptions.UserNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

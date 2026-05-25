@@ -1,4 +1,4 @@
-package com.gibanator.dailystepbackendjava.user.exception;
+package com.gibanator.dailystepbackendjava.auth.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(Long id){

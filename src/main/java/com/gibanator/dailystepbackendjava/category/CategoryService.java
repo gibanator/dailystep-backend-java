@@ -3,7 +3,7 @@ package com.gibanator.dailystepbackendjava.category;
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.user.UserEntity;
 import com.gibanator.dailystepbackendjava.user.UserRepository;
-import com.gibanator.dailystepbackendjava.user.exception.UserNotFoundException;
+import com.gibanator.dailystepbackendjava.auth.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +54,19 @@ public class CategoryService {
         return categoryRepository.save(cat);
     }
 
+    public CategoryEntity switchVisibility(Long id, Long userId) {
+        CategoryEntity cat = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
+
+        if (!cat.getUser().getId().equals(userId)) {
+            throw new CategoryNotFoundException(id);
+        }
+
+        cat.setVisible(!cat.isVisible());
+
+        return categoryRepository.save(cat);
+    }
+
     public void delete(Long id, Long userId){
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
@@ -61,5 +74,7 @@ public class CategoryService {
         if (!cat.getUser().getId().equals(userId)) {
             throw new CategoryNotFoundException(id);
         }
+
+        categoryRepository.delete(cat);
     }
 }

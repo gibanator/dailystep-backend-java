@@ -38,3 +38,6 @@ out/
 
 ### Env vars ###
 .env
+
+### Firebase Service Acc ###
+src/main/resources/firebase-service-account.json

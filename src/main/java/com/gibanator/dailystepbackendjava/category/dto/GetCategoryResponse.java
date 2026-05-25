@@ -8,4 +8,6 @@ import lombok.Setter;
 public class GetCategoryResponse {
     private Long id;
     private String name;
+    private boolean isVisible;
+    private boolean isActive;
 }

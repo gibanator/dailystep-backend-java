@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateCategoryResponse {
-    private String name;
+    private Long id;
 }

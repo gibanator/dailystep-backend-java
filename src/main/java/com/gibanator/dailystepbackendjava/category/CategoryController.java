@@ -1,7 +1,7 @@
 package com.gibanator.dailystepbackendjava.category;
 
 import com.gibanator.dailystepbackendjava.category.dto.*;
-import com.gibanator.dailystepbackendjava.user.UserEntity;
+import com.gibanator.dailystepbackendjava.auth.security.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,13 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CreateCategoryResponse> create(
-            @AuthenticationPrincipal UserEntity user,  // BETTER TO USE PRINCIPAL CLASS LATER
+            @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody CreateCategoryRequest req
     ) {
         CategoryEntity category = service.create(user.getId(), req.getName());
 
         CreateCategoryResponse resp = new CreateCategoryResponse();
-        resp.setName(category.getName());
+        resp.setId(category.getId());
 
         return ResponseEntity
                  .status(HttpStatus.CREATED)
@@ -35,13 +35,16 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<GetCategoryResponse>> getMyCategories(
-            @AuthenticationPrincipal UserEntity user
+            @AuthenticationPrincipal UserPrincipal user
             ) {
         List<GetCategoryResponse> resp = service.findByUserId(user.getId())
                 .stream()
                 .map(cat -> {
                     GetCategoryResponse dto = new GetCategoryResponse();
                     dto.setName(cat.getName());
+                    dto.setId(cat.getId());
+                    dto.setVisible(cat.isVisible());
+                    dto.setActive(cat.isActive());
                     return dto;
                 })
                 .toList();
@@ -52,7 +55,7 @@ public class CategoryController {
     @PatchMapping("/{id}")
     public ResponseEntity<GetCategoryResponse> editMyCategoryById(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal UserPrincipal user,
             @RequestBody EditCategoryRequest req
     ){
         CategoryEntity cat = service.update(
@@ -70,10 +73,22 @@ public class CategoryController {
         return ResponseEntity.ok(resp);
     }
 
+    @PatchMapping("/{id}/visibility/switch")
+    public ResponseEntity<CategoryVisibilityResponse> switchVisibility(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        CategoryEntity cat = service.switchVisibility(id, user.getId());
+
+        return ResponseEntity.ok(
+                new CategoryVisibilityResponse(cat.getId(), cat.isVisible())
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeCategory(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserEntity user
+            @AuthenticationPrincipal UserPrincipal user
     ){
         service.delete(id, user.getId());
 
