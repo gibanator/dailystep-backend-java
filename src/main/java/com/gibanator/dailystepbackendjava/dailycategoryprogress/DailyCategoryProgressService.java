@@ -49,8 +49,9 @@ public class DailyCategoryProgressService {
                 .collect(Collectors.toMap(CategoryEntity::getId, Function.identity()));
 
         List<DailyCategoryProgressEntity> existingRows =
-                progressRepository.findAllByIdDateAndIdCategoryIdIn(
+                progressRepository.findAllByUserAndDateAndCategoryIds(
                         req.date(),
+                        userId,
                         categoryIds
                 );
 
