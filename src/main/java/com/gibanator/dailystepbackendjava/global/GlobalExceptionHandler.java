@@ -5,6 +5,7 @@ import com.gibanator.dailystepbackendjava.auth.exceptions.InvalidCredentialsExce
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
 import com.gibanator.dailystepbackendjava.global.dto.ErrorResponse;
 import com.gibanator.dailystepbackendjava.auth.exceptions.UserNotFoundException;
+import com.gibanator.dailystepbackendjava.target.exception.TargetNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
+        ErrorResponse resp = new ErrorResponse("Not found.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(resp);
+    }
+
+    @ExceptionHandler(TargetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTargetNotFound(TargetNotFoundException ex) {
         ErrorResponse resp = new ErrorResponse("Not found.", ex.getMessage());
 
         return ResponseEntity
