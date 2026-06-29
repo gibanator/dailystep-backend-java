@@ -1,14 +1,10 @@
 package com.gibanator.dailystepbackendjava.daycompletion;
 
 import com.gibanator.dailystepbackendjava.auth.security.UserPrincipal;
-import com.gibanator.dailystepbackendjava.daycompletion.dto.DayCompletionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -17,12 +13,22 @@ import java.time.LocalDate;
 @RequestMapping("/api/v1/day-completion")
 public class DayCompletionController {
     private final DayCompletionService service;
-    @PostMapping("/toggle")
-    public ResponseEntity<DayCompletionResponse> toggleDayCompletion(
+
+    @PostMapping
+    public ResponseEntity<Void> markCompleted(
             @AuthenticationPrincipal UserPrincipal user,
             @RequestParam LocalDate date
-            ){
-        boolean completed = service.setDayCompleted(user.getId(), date);
-        return ResponseEntity.ok(new DayCompletionResponse(completed));
+    ) {
+        service.markCompleted(user.getId(), date);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> unmarkCompleted(
+            @AuthenticationPrincipal UserPrincipal user,
+            @RequestParam LocalDate date
+    ) {
+        service.unmarkCompleted(user.getId(), date);
+        return ResponseEntity.noContent().build();
     }
 }
