@@ -38,6 +38,20 @@ spring:
           starttls:
             enable: true
 
+  ai:
+    gigachat:
+      auth:
+        bearer:
+          api-key: ${GIGACHAT_API_KEY:}
+        scope: ${GIGACHAT_SCOPE:GIGACHAT_API_PERS}
+        # dev: пропускаем проверку TLS-сертификата. В проде заменить на сертификаты Минцифры.
+        unsafe-ssl: ${GIGACHAT_UNSAFE_SSL:true}
+      chat:
+        options:
+          model: ${GIGACHAT_MODEL:GigaChat}
+          temperature: 0.3
+          max-tokens: 1024
+
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000

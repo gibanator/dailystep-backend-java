@@ -1,5 +1,6 @@
 package com.gibanator.dailystepbackendjava.global;
 
+import com.gibanator.dailystepbackendjava.ai.exception.ProviderNotAvailableException;
 import com.gibanator.dailystepbackendjava.auth.exceptions.EmailAlreadyExistsException;
 import com.gibanator.dailystepbackendjava.auth.exceptions.InvalidCredentialsException;
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
@@ -76,6 +77,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(resp);
+    }
+
+    @ExceptionHandler(ProviderNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleProviderNotAvailable(ProviderNotAvailableException ex) {
+        ErrorResponse resp = new ErrorResponse("Provider not available.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(resp);
     }
 }
