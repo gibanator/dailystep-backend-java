@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'com.google.firebase:firebase-admin:9.9.0'
+    // AI: GigaChat через Spring AI 2.0 (совместимо со Spring Boot 4). Проверить актуальную версию.
+    implementation 'chat.giga:spring-ai-starter-model-gigachat:2.0.0-M4'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
     compileOnly 'org.projectlombok:lombok'
