@@ -1,19 +1,18 @@
 package com.gibanator.dailystepbackendjava.ai;
 
+import chat.giga.springai.GigaChatModel;
 import com.gibanator.dailystepbackendjava.ai.dto.AiEvalResult;
 import com.gibanator.dailystepbackendjava.ai.dto.AiEvaluateRequest;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Component;
 
 /**
  * Реализация оценки дня через GigaChat (Sber) поверх Spring AI.
  *
- * <p>Сейчас в контексте единственный {@link ChatModel} (его создаёт стартер
- * {@code chat.giga:spring-ai-starter-model-gigachat}), поэтому внедряем его напрямую.
- * Когда добавим Claude/Qwen/DeepSeek, моделей станет несколько — тогда здесь нужно будет
- * внедрять КОНКРЕТНЫЙ бин (через {@code @Qualifier} или типизированный класс модели),
- * иначе внедрение {@link ChatModel} станет неоднозначным. См. документ «08 — Мультипровайдерность».
+ * <p>С Фазы 2 в контексте несколько моделей (GigaChat + вручную собранные Claude/Qwen/DeepSeek),
+ * поэтому внедряем КОНКРЕТНЫЙ тип {@link GigaChatModel} (бин от стартера
+ * {@code chat.giga:spring-ai-starter-model-gigachat}), а не абстрактный {@code ChatModel} —
+ * иначе внедрение было бы неоднозначным. См. документ «08 — Мультипровайдерность».
  */
 @Component
 public class GigaChatEvaluator implements DayEvaluator {
@@ -21,8 +20,8 @@ public class GigaChatEvaluator implements DayEvaluator {
     private final ChatClient chatClient;
     private final PromptBuilder promptBuilder;
 
-    public GigaChatEvaluator(ChatModel chatModel, PromptBuilder promptBuilder) {
-        this.chatClient = ChatClient.create(chatModel);
+    public GigaChatEvaluator(GigaChatModel gigaChatModel, PromptBuilder promptBuilder) {
+        this.chatClient = ChatClient.create(gigaChatModel);
         this.promptBuilder = promptBuilder;
     }
 
