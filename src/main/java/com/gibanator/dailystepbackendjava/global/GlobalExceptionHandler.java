@@ -1,6 +1,9 @@
 package com.gibanator.dailystepbackendjava.global;
 
 import com.gibanator.dailystepbackendjava.ai.exception.ProviderNotAvailableException;
+import com.gibanator.dailystepbackendjava.asr.exception.AsrException;
+import com.gibanator.dailystepbackendjava.asr.exception.AsrUnavailableException;
+import com.gibanator.dailystepbackendjava.asr.exception.InvalidAudioException;
 import com.gibanator.dailystepbackendjava.auth.exceptions.EmailAlreadyExistsException;
 import com.gibanator.dailystepbackendjava.auth.exceptions.InvalidCredentialsException;
 import com.gibanator.dailystepbackendjava.category.exception.CategoryNotFoundException;
@@ -83,6 +86,33 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProviderNotAvailableException.class)
     public ResponseEntity<ErrorResponse> handleProviderNotAvailable(ProviderNotAvailableException ex) {
         ErrorResponse resp = new ErrorResponse("Provider not available.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(resp);
+    }
+
+    @ExceptionHandler(AsrUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleAsrUnavailableException(AsrUnavailableException ex) {
+        ErrorResponse resp = new ErrorResponse("Transcription service unavailable.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(resp);
+    }
+
+    @ExceptionHandler(AsrException.class)
+    public ResponseEntity<ErrorResponse> handleAsrException(AsrException ex) {
+        ErrorResponse resp = new ErrorResponse("ASR Internal error.", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .body(resp);
+    }
+
+    @ExceptionHandler(InvalidAudioException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAudioException(InvalidAudioException ex) {
+        ErrorResponse resp = new ErrorResponse("Invalid audio.", ex.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
