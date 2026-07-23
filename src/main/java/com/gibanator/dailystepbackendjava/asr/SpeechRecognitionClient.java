@@ -2,7 +2,9 @@ package com.gibanator.dailystepbackendjava.asr;
 
 import com.gibanator.dailystepbackendjava.asr.dto.AsrResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,27 +26,29 @@ public class SpeechRecognitionClient {
     }
 
     public AsrResponse transcribe(MultipartFile audio) throws IOException {
-        InputStreamResource resource = new InputStreamResource(audio.getInputStream()) {
-            @Override
-            public String getFilename() {
-                return audio.getOriginalFilename();
-            }
-
-            @Override
-            public long contentLength() {
-                return audio.getSize();
-            }
-        };
+        Resource resource = audio.getResource();
+        HttpHeaders fileHeaders = new HttpHeaders();
+        fileHeaders.setContentType(resolveContentType(audio));
+        fileHeaders.setContentDispositionFormData("file", audio.getOriginalFilename());
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", resource);
+        body.add("file", new HttpEntity<>(resource, fileHeaders));
 
         return restClient.post()
                 .uri("/transcribe")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON)
                 .body(body)
                 .retrieve()
                 .body(AsrResponse.class);
 
+    }
+
+    private MediaType resolveContentType(MultipartFile audio) {
+        String contentType = audio.getContentType();
+        if (contentType == null || contentType.isBlank()) {
+            return MediaType.APPLICATION_OCTET_STREAM;
+        }
+        return MediaType.parseMediaType(contentType);
     }
 }
