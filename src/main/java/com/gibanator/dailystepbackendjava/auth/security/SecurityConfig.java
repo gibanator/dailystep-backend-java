@@ -29,7 +29,8 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers(
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**"
+                                        "/v3/api-docs/**",
+                                        "/api/v1/audio/transcribe"
                                         ).permitAll()
                                 .anyRequest().authenticated()
                 )

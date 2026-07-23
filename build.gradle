@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:9.9.0'
     // AI: GigaChat через Spring AI 2.0 (совместимо со Spring Boot 4). Проверить актуальную версию.
     implementation 'chat.giga:spring-ai-starter-model-gigachat:2.0.0-M4'
+    // AI: DeepSeek uses an OpenAI-compatible Chat Completions API.
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai:2.0.0-M4'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
     compileOnly 'org.projectlombok:lombok'
