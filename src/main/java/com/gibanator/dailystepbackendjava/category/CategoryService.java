@@ -30,14 +30,14 @@ public class CategoryService {
     }
 
     public List<CategoryEntity> findByUserId(Long userId) {
-       return categoryRepository.findByUserId(userId);
+       return categoryRepository.findByUserIdAndDeletedFalse(userId);
     }
 
     public CategoryEntity update(Long id, Long userId, String name, Boolean isActive, Boolean isVisible) {
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
-        if (!cat.getUser().getId().equals(userId)) {
+        if (!cat.getUser().getId().equals(userId) || cat.isDeleted()) {
             throw new CategoryNotFoundException(id);
         }
 
@@ -58,7 +58,7 @@ public class CategoryService {
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
-        if (!cat.getUser().getId().equals(userId)) {
+        if (!cat.getUser().getId().equals(userId) || cat.isDeleted()) {
             throw new CategoryNotFoundException(id);
         }
 
@@ -71,10 +71,13 @@ public class CategoryService {
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
-        if (!cat.getUser().getId().equals(userId)) {
+        if (!cat.getUser().getId().equals(userId) || cat.isDeleted()) {
             throw new CategoryNotFoundException(id);
         }
 
-        categoryRepository.delete(cat);
+        cat.setDeleted(true);
+        cat.setActive(false);
+        cat.setVisible(false);
+        categoryRepository.save(cat);
     }
 }

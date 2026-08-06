@@ -31,4 +31,12 @@ public interface TargetSelectionRepository
             @Param("targetId") Long targetId,
             @Param("userId") Long userId
     );
+
+    @Query("""
+            select ts
+            from TargetSelectionEntity ts
+            where ts.target.user.id = :userId
+            order by ts.id.date, ts.id.targetId
+            """)
+    List<TargetSelectionEntity> findAllByUserId(@Param("userId") Long userId);
 }

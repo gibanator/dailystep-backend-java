@@ -34,4 +34,13 @@ public interface DailyCategoryProgressRepository extends JpaRepository<DailyCate
             Long userId,
             Collection<Long> categoryIds
     );
+
+    @Query("""
+            select p
+            from DailyCategoryProgressEntity p
+            join p.category c
+            where c.user.id = :userId
+            order by p.id.date, p.id.categoryId
+           """)
+    List<DailyCategoryProgressEntity> findAllByUser(Long userId);
 }
