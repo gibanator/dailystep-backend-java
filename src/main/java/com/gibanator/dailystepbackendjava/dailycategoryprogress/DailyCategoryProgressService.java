@@ -38,7 +38,7 @@ public class DailyCategoryProgressService {
 
         // finding all categories from request in repository and then checking accordance
         List<CategoryEntity> categories = categoryRepository
-                .findAllByIdInAndUserId(categoryIds, userId);
+                .findAllByIdInAndUserIdAndDeletedFalse(categoryIds, userId);
 
         if (categories.size() != categoryIds.size()) {
             throw new CategoryNotFoundException(categoryIds);

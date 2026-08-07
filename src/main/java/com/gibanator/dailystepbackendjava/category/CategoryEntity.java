@@ -34,6 +34,9 @@ public class CategoryEntity {
 
     private boolean isVisible = true;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

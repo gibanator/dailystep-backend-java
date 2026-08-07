@@ -7,13 +7,16 @@ import java.util.Collection;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    List<CategoryEntity> findByUserId(Long userId);
-    List<CategoryEntity> findAllByIdInAndUserId(Collection<Long> ids, Long userId);
+    List<CategoryEntity> findByUserIdAndDeletedFalse(Long userId);
+    List<CategoryEntity> findAllByUserIdOrderByIdAsc(Long userId);
+    List<CategoryEntity> findAllByIdInAndUserIdAndDeletedFalse(Collection<Long> ids, Long userId);
+
     @Query("""
     select c
     from CategoryEntity c
     where c.user.id = :userId
       and c.isActive = true
+      and c.deleted = false
     order by c.sortOrder
 """)
     List<CategoryEntity> findAllActiveByUser(Long userId);
